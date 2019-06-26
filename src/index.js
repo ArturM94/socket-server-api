@@ -1,9 +1,16 @@
 import express from 'express';
 import http from 'http';
 import io from 'socket.io';
+import mongoose from 'mongoose';
 
 import { socketEvents } from './socketEvents';
 
+
+const DB_URI = process.env.DB_URI || 'mongodb://localhost:27017/socketApiDB';
+mongoose.connect(DB_URI, { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const app = express();
 const httpServer = http.createServer(app);
