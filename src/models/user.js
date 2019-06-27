@@ -57,6 +57,12 @@ UserSchema.pre('save', (next) => {
   });
 });
 
+/**
+ * Compare passwords.
+ *
+ * @param inputPassword {string} Password to compare
+ * @param callback {function} Callback for successful function execution
+ */
 UserSchema.methods.comparePassword = (inputPassword, callback) => {
   // eslint-disable-next-line consistent-return
   bcrypt.compare(inputPassword, this.password, (error, isMatch) => {
