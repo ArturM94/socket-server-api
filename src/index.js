@@ -6,7 +6,11 @@ import { socketEvents } from './socketEvents';
 import apiRouter from './routes/api';
 
 const DB_URI = process.env.DB_URI || 'mongodb://localhost:27017/socketApiDB';
-mongoose.connect(DB_URI, { useNewUrlParser: true });
+mongoose.connect(DB_URI, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
