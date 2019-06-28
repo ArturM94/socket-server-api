@@ -44,7 +44,7 @@ function updateUser (req, res, next) {
   }, (err, user) => {
     if (err) {
       res.status(400)
-        .json({ error: 'Users is not found.' });
+        .json({ error: 'User is not found.' });
       return next(err);
     }
 
@@ -66,7 +66,7 @@ function deleteUser (req, res, next) {
   UserModel.findByIdAndDelete(userId, (err) => {
     if (err) {
       res.status(400)
-        .json({ error: 'Users is not found.' });
+        .json({ error: 'User is not found.' });
       return next(err);
     }
 
@@ -86,7 +86,7 @@ function getAllUsers (req, res, next) {
   UserModel.find({}, (err, users) => {
     if (err) {
       res.status(400)
-        .json({ error: 'Users is not found.' });
+        .json({ error: 'Users are not found.' });
       return next(err);
     }
 
