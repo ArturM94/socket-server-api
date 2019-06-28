@@ -1,14 +1,17 @@
 import express from 'express';
 import UserController from '../controllers/user';
+import isAuth from '../middlewares/isAuth';
+import attachCurrentUser from '../middlewares/attachCurrentUser';
 
 const userRouter = express.Router();
+const authMiddlewares = [isAuth, attachCurrentUser];
 
 userRouter.route('/')
-  .get(UserController.getAllUsers);
+  .get(authMiddlewares, UserController.getAllUsers);
 
 userRouter.route('/:userId')
-  .get(UserController.getUser)
-  .put(UserController.updateUser)
-  .delete(UserController.deleteUser);
+  .get(authMiddlewares, UserController.getUser)
+  .put(authMiddlewares, UserController.updateUser)
+  .delete(authMiddlewares, UserController.deleteUser);
 
 export default userRouter;
