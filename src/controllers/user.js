@@ -1,4 +1,4 @@
-import { UserModel } from '../models/user';
+import UserService from '../services/user';
 
 // TODO permission checking after auth implementation
 /**
@@ -6,21 +6,17 @@ import { UserModel } from '../models/user';
  *
  * @param req {Object} Request object
  * @param res {Object} Response object
- * @param next {function} Callback to the next handler
+ * @returns {Promise<Response>}
  */
-function getUser (req, res, next) {
-  const { userId } = req.params;
-
-  UserModel.findById(userId, (err, user) => {
-    if (err) {
-      res.status(400)
-        .json({ error: 'User is not found.' });
-      return next(err);
-    }
-
+async function getUser (req, res) {
+  try {
+    const user = await UserService.getUser(req.currentUser._id);
     return res.status(200)
       .json({ user });
-  });
+  } catch (e) {
+    return res.status(500)
+      .json({ error: e.message });
+  }
 }
 
 /**
@@ -28,11 +24,9 @@ function getUser (req, res, next) {
  *
  * @param req {Object} The request object
  * @param res {Object} The response object
- * @param next {function} The callback to the next handler
+ * @returns {Promise<Response>} User, otherwise error message
  */
-// eslint-disable-next-line consistent-return
-function updateUser (req, res, next) {
-  const { userId } = req.params;
+async function updateUser (req, res) {
   const data = req.body;
 
   const dataIsInvalid = !data || data.constructor !== Object || Object.keys(data).length === 0;
@@ -43,19 +37,14 @@ function updateUser (req, res, next) {
 
   // TODO add data validation
 
-  UserModel.findByIdAndUpdate(userId, data, {
-    new: true,
-    runValidators: true,
-  }, (err, user) => {
-    if (err) {
-      res.status(400)
-        .json({ error: 'User is not found.' });
-      return next(err);
-    }
-
+  try {
+    const user = await UserService.updateUser(req.currentUser._id, data);
     return res.status(200)
       .json({ user });
-  });
+  } catch (e) {
+    return res.status(500)
+      .json({ error: e.message });
+  }
 }
 
 /**
@@ -63,21 +52,17 @@ function updateUser (req, res, next) {
  *
  * @param req {Object} The request object
  * @param res {Object} The response object
- * @param next {function} The callback to the next handler
+ * @returns {Promise<Response>} Success message, otherwise error message
  */
-function deleteUser (req, res, next) {
-  const { userId } = req.params;
-
-  UserModel.findByIdAndDelete(userId, (err) => {
-    if (err) {
-      res.status(400)
-        .json({ error: 'User is not found.' });
-      return next(err);
-    }
-
+async function deleteUser (req, res) {
+  try {
+    await UserService.deleteUser(req.currentUser._id);
     return res.status(200)
       .json({ message: 'User is deleted.' });
-  });
+  } catch (e) {
+    return res.status(500)
+      .json({ error: e.message });
+  }
 }
 
 /**
@@ -85,19 +70,17 @@ function deleteUser (req, res, next) {
  *
  * @param req {Object} The request object
  * @param res {Object} The response object
- * @param next {function} The callback to the next handler
+ * @returns {Promise<Response>} Users, otherwise error message
  */
-function getAllUsers (req, res, next) {
-  UserModel.find({}, (err, users) => {
-    if (err) {
-      res.status(400)
-        .json({ error: 'Users are not found.' });
-      return next(err);
-    }
-
+async function getAllUsers (req, res) {
+  try {
+    const users = await UserService.getAllUsers();
     return res.status(200)
       .json({ users });
-  });
+  } catch (e) {
+    return res.status(500)
+      .json({ error: e.message });
+  }
 }
 
 export default {
