@@ -30,13 +30,18 @@ function getUser (req, res, next) {
  * @param res {Object} The response object
  * @param next {function} The callback to the next handler
  */
+// eslint-disable-next-line consistent-return
 function updateUser (req, res, next) {
   const { userId } = req.params;
   const data = req.body;
 
-  if (Object.keys(data).length === 0 || typeof data !== 'object') {
-    console.error('No input data.');
+  const dataIsInvalid = !data || data.constructor !== Object || Object.keys(data).length === 0;
+  if (dataIsInvalid) {
+    return res.status(400)
+      .json({ error: 'No input data.' });
   }
+
+  // TODO add data validation
 
   UserModel.findByIdAndUpdate(userId, data, {
     new: true,
