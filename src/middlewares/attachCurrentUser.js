@@ -2,7 +2,7 @@ import { UserModel } from '../models/user';
 
 async function attachCurrentUser (req, res, next) {
   try {
-    const userData = req.token;
+    const userData = req.token.data;
     const user = await UserModel.findOne({ _id: userData._id });
     if (!user) {
       return res.status(401)
