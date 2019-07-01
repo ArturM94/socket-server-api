@@ -1,22 +1,19 @@
 import express from 'express';
 import http from 'http';
 import io from 'socket.io';
-import mongoose from 'mongoose';
 import config from './config';
 import { socketEvents } from './socketEvents';
 import apiRouter from './routes/api';
-
-const DB_URI = config.db.URI;
-mongoose.connect(DB_URI, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
-mongoose.Promise = global.Promise;
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+import { connectToDatabase } from './database';
 
 const app = express();
+
+try {
+  connectToDatabase();
+} catch (e) {
+  console.error('Something wrong with db connection...\n', e.message);
+}
+
 const httpServer = http.createServer(app);
 
 const { HOST, PORT } = config;
