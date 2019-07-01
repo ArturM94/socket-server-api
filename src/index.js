@@ -2,10 +2,11 @@ import express from 'express';
 import http from 'http';
 import io from 'socket.io';
 import mongoose from 'mongoose';
+import config from './config';
 import { socketEvents } from './socketEvents';
 import apiRouter from './routes/api';
 
-const DB_URI = process.env.DB_URI || 'mongodb://localhost:27017/socketApiDB';
+const DB_URI = config.db.URI;
 mongoose.connect(DB_URI, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -18,8 +19,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 const app = express();
 const httpServer = http.createServer(app);
 
-const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || '3000';
+const { HOST, PORT } = config;
 
 const server = httpServer.listen(PORT, (error) => {
   if (error) {

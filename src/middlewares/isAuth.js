@@ -1,4 +1,5 @@
 import jwt from 'express-jwt';
+import config from '../config';
 
 // eslint-disable-next-line consistent-return
 function getTokenFromHeader (req) {
@@ -8,7 +9,7 @@ function getTokenFromHeader (req) {
 }
 
 export default jwt({
-  secret: process.env.JWT_SECRET || 'UnS3CuR3_S1Gn@tUr3',
+  secret: config.auth.JWT_SECRET,
   userProperty: 'token', // access by req.token
   getToken: getTokenFromHeader,
 });

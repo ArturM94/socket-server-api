@@ -1,6 +1,7 @@
 import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user';
+import config from '../config';
 
 async function registration (email, password) {
   const hashedPassword = await argon2.hash(password);
@@ -31,8 +32,8 @@ function generateToken (user) {
     _id: user._id,
     email: user.email,
   };
-  const secret = process.env.JWT_SECRET || 'UnS3CuR3_S1Gn@tUr3';
-  const expiration = process.env.JWT_EXPIRATION || '24h';
+  const secret = config.auth.JWT_SECRET;
+  const expiration = config.auth.JWT_EXPIRATION;
   return jwt.sign({ data }, secret, { expiresIn: expiration });
 }
 
