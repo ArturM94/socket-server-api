@@ -9,7 +9,7 @@ async function registration (email, password) {
     email,
     password: hashedPassword,
   });
-  const token = this.generateToken(user);
+  const token = generateToken(user);
   return { user, token };
 }
 
@@ -23,7 +23,7 @@ async function login (email, password) {
       throw new Error('Password is incorrect.');
     }
   }
-  const token = this.generateToken(user);
+  const token = generateToken(user);
   return { user, token };
 }
 
@@ -40,5 +40,4 @@ function generateToken (user) {
 export default {
   registration,
   login,
-  generateToken,
 };
