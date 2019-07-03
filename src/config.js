@@ -7,6 +7,7 @@ const config = {
   PORT: process.env.PORT || '3000',
   db: {
     URI: process.env.DB_URI || 'mongodb://localhost:27017/socketApiDB',
+    TEST: process.env.DB_TEST || 'mongodb://localhost:27017/socketApiTestDB',
   },
   auth: {
     JWT_SECRET: process.env.JWT_SECRET || 'UnS3CuR3_S1Gn@tUr3',
