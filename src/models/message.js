@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 const MessageSchema = new Schema({
-  chatTd: {
+  chatId: {
     type: Schema.Types.ObjectId,
     required: true,
   },
