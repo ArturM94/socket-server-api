@@ -1,12 +1,17 @@
-import { assert } from 'chai';
+import chai, { assert, expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import CastError from 'mongoose';
 import config from '../config';
 import UserService from '../services/user';
 import { UserModel } from '../models/user';
 import { connectToDatabase } from '../database';
 
+chai.use(chaiAsPromised);
+
 let connection;
 let user;
 let userId;
+let invalidUserId;
 
 setup(async () => {
   connection = await connectToDatabase(config.db.TEST);
@@ -17,6 +22,7 @@ setup(async () => {
     password: 'password',
   });
   userId = user._id;
+  invalidUserId = Math.floor(Math.random() * 100) + 1;
 });
 
 teardown(async () => {
@@ -64,6 +70,39 @@ suite('User Service', () => {
         .exec();
 
       assert.equal(foundUsers.length, users.length, 'number of found users equal to number of users');
+    });
+  });
+
+  suite('negative tests', () => {
+    test('#getUser()', async () => {
+      const foundUser = UserService.getUser(invalidUserId);
+
+      return expect(foundUser).to.eventually
+        .be.rejectedWith(CastError, null, 'get CastError due invalid user id')
+        .and.be.an.instanceOf(Error);
+    });
+
+    test('#updateUser()', async () => {
+      const data = {
+        email: 'updated-testuser@gmail.com',
+        profile: {
+          firstName: 'FirstName',
+          lastName: 'LastName',
+        },
+      };
+      const updatedUser = UserService.updateUser(invalidUserId, data);
+
+      return expect(updatedUser).to.eventually
+        .be.rejectedWith(CastError, null, 'get CastError due invalid user id')
+        .and.be.an.instanceOf(Error);
+    });
+
+    test('#deleteUser()', async () => {
+      const deletedUser = UserService.deleteUser(invalidUserId);
+
+      return expect(deletedUser).to.eventually
+        .be.rejectedWith(CastError, null, 'get CastError due invalid user id')
+        .and.be.an.instanceOf(Error);
     });
   });
 });
