@@ -1,10 +1,8 @@
 import chai, { assert, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import CastError from 'mongoose';
-import config from '../config';
+import mongoose, { CastError } from 'mongoose';
 import UserService from '../services/user';
 import { UserModel } from '../models/user';
-import { connectToDatabase } from '../database';
 
 chai.use(chaiAsPromised);
 
@@ -14,8 +12,7 @@ let userId;
 let invalidUserId;
 
 setup(async () => {
-  connection = await connectToDatabase(config.db.TEST);
-  await connection.dropDatabase();
+  await mongoose.connection.dropDatabase();
 
   user = await UserModel.create({
     email: 'testuser@gmail.com',
@@ -23,10 +20,6 @@ setup(async () => {
   });
   userId = user._id;
   invalidUserId = Math.floor(Math.random() * 100) + 1;
-});
-
-teardown(async () => {
-  await connection.close();
 });
 
 suite('User Service', () => {

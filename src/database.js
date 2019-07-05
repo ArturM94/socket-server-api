@@ -1,28 +1,23 @@
-import mongoose from 'mongoose';
-import config from './config';
+import mongoose, { connection } from 'mongoose';
 
 /**
  * Connects to database.
  *
- * @returns {Promise<void>}
+ * @param URI {string} Database URI
+ * @returns {Promise<Connection>} MongoDB connection
  */
-async function connectToDatabase () {
-  const { URI } = config.db;
-
+async function connectToDatabase (URI) {
   mongoose.Promise = await global.Promise;
 
-  if (process.env.NODE_ENV !== 'test') {
-    await mongoose.connect(URI, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-    });
-  }
+  await mongoose.connect(URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  });
 
-  const db = await mongoose.connection;
-  await db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+  await connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-  console.log(`connected to db: ${URI}`);
+  return connection;
 }
 
 export { connectToDatabase };
