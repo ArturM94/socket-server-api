@@ -2,6 +2,27 @@ import UserService from '../services/user';
 
 // TODO permission checking after auth implementation
 /**
+ * Get user by id.
+ *
+ * @param req {Object} Request object
+ * @param res {Object} Response object
+ * @returns {Promise<Response>}
+ */
+async function getUserById (req, res) {
+  const { userId } = req.params;
+
+  try {
+    const user = await UserService.getUser(userId);
+    return res.status(200)
+      .json({ user });
+  } catch (e) {
+    console.log(e);
+    return res.status(500)
+      .json({ error: e.message });
+  }
+}
+
+/**
  * Get user.
  *
  * @param req {Object} Request object
@@ -84,6 +105,7 @@ async function getAllUsers (req, res) {
 }
 
 export default {
+  getUserById,
   getUser,
   updateUser,
   deleteUser,

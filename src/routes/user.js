@@ -9,9 +9,12 @@ const authMiddlewares = [isAuth, attachCurrentUser];
 userRouter.route('/')
   .get(authMiddlewares, UserController.getAllUsers);
 
-userRouter.route('/:userId')
+userRouter.route('/current')
   .get(authMiddlewares, UserController.getUser)
   .put(authMiddlewares, UserController.updateUser)
   .delete(authMiddlewares, UserController.deleteUser);
+
+userRouter.route('/:userId')
+  .get(authMiddlewares, UserController.getUserById);
 
 export default userRouter;
