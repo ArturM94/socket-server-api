@@ -1,11 +1,11 @@
 import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
-import { UserModel } from '../models/user';
+import { User } from '../models/user';
 import config from '../config';
 
 async function registration (email, password) {
   const hashedPassword = await argon2.hash(password);
-  const user = await UserModel.create({
+  const user = await User.create({
     email,
     password: hashedPassword,
   });
@@ -14,7 +14,7 @@ async function registration (email, password) {
 }
 
 async function login (email, password) {
-  const user = await UserModel.findOne({ email }, '+password');
+  const user = await User.findOne({ email }, '+password');
   if (!user) {
     throw new Error('User is not found.');
   } else {

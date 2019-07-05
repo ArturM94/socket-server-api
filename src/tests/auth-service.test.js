@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import * as argon2 from 'argon2';
 import { connectToDatabase } from '../database';
 import config from '../config';
-import { UserModel } from '../models/user';
+import { User } from '../models/user';
 import AuthService from '../services/auth';
 
 chai.use(chaiAsPromised);
@@ -35,7 +35,7 @@ suite('Auth Service', () => {
     });
 
     test('#login()', async () => {
-      mockUser = await UserModel.create({
+      mockUser = await User.create({
         email,
         password: hashedPassword,
       });
@@ -60,7 +60,7 @@ suite('Auth Service', () => {
     test('#login() - incorrect password', async () => {
       const incorrectPassword = 'incorrectPassword';
       const hashedIncorrectPassword = await argon2.hash(incorrectPassword);
-      mockUser = await UserModel.create({
+      mockUser = await User.create({
         email,
         password: hashedIncorrectPassword,
       });

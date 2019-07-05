@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import mongoose, { CastError } from 'mongoose';
 import * as argon2 from 'argon2';
 import UserService from '../services/user';
-import { UserModel } from '../models/user';
+import { User } from '../models/user';
 
 chai.use(chaiAsPromised);
 
@@ -17,7 +17,7 @@ setup(async () => {
   const password = 'password';
   const hashedPassword = await argon2.hash(password);
 
-  mockUser = await UserModel.create({
+  mockUser = await User.create({
     email: 'testuser@gmail.com',
     password: hashedPassword,
   });
@@ -53,7 +53,7 @@ suite('User Service', () => {
 
     test('#deleteUser()', async () => {
       const deletedUser = await UserService.deleteUser(userId);
-      const users = await UserModel.find({})
+      const users = await User.find({})
         .countDocuments()
         .exec();
 
@@ -63,7 +63,7 @@ suite('User Service', () => {
 
     test('#getAllUsers()', async () => {
       const foundUsers = await UserService.getAllUsers();
-      const users = await UserModel.find({})
+      const users = await User.find({})
         .exec();
 
       assert.equal(foundUsers.length, users.length, 'number of found users equal to number of users');

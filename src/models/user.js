@@ -27,6 +27,5 @@ const UserSchema = new Schema({
   timestamps: true,
 });
 
-UserSchema.virtual('fullName', () => `${this.profile.firstName} ${this.profile.lastName}`);
 
-export const UserModel = mongoose.model('UserModel', UserSchema);
+export const User = mongoose.model('User', UserSchema);

@@ -1,22 +1,22 @@
-import { UserModel } from '../models/user';
+import { User } from '../models/user';
 
 async function getUser (userId) {
-  return UserModel.findById(userId);
+  return User.findById(userId);
 }
 
 async function updateUser (userId, data) {
-  return UserModel.findByIdAndUpdate(userId, data, {
+  return User.findByIdAndUpdate(userId, data, {
     new: true,
     runValidators: true,
   });
 }
 
 async function deleteUser (userId) {
-  return UserModel.findByIdAndDelete(userId);
+  return User.findByIdAndDelete(userId);
 }
 
 async function getAllUsers () {
-  return UserModel.find({});
+  return User.find({});
 }
 
 export default {
