@@ -1,24 +1,27 @@
 import chai, { assert, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import mongoose, { CastError } from 'mongoose';
+import * as argon2 from 'argon2';
 import UserService from '../services/user';
 import { UserModel } from '../models/user';
 
 chai.use(chaiAsPromised);
 
-let connection;
-let user;
+let mockUser;
 let userId;
 let invalidUserId;
 
 setup(async () => {
   await mongoose.connection.dropDatabase();
 
-  user = await UserModel.create({
+  const password = 'password';
+  const hashedPassword = await argon2.hash(password);
+
+  mockUser = await UserModel.create({
     email: 'testuser@gmail.com',
-    password: 'password',
+    password: hashedPassword,
   });
-  userId = user._id;
+  userId = mockUser._id;
   invalidUserId = Math.floor(Math.random() * 100) + 1;
 });
 
@@ -26,7 +29,8 @@ suite('User Service', () => {
   suite('positive tests', () => {
     test('#getUser()', async () => {
       const foundUser = await UserService.getUser(userId);
-      assert.equal(foundUser.email, user.email, 'found user equal to user');
+
+      assert.equal(foundUser.email, mockUser.email, 'found user equal to user');
       assert.isUndefined(foundUser.profile.firstName, 'found user first name is undefined');
       assert.isUndefined(foundUser.profile.lastName, 'found user last name is undefined');
       assert.doesNotHaveAnyKeys(foundUser, ['password'], 'found user does not have "password" key');
@@ -53,7 +57,7 @@ suite('User Service', () => {
         .countDocuments()
         .exec();
 
-      assert.equal(deletedUser.email, user.email, 'deleted user email equal to user email');
+      assert.equal(deletedUser.email, mockUser.email, 'deleted user email equal to user email');
       assert.equal(users, 0, 'number of users equal to 0');
     });
 
