@@ -40,4 +40,5 @@ function generateToken (user) {
 export default {
   registration,
   login,
+  generateToken,
 };
