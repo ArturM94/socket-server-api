@@ -1,23 +1,24 @@
 import express from 'express';
+import ChatController from '../controllers/chat';
+import isAuth from '../middlewares/isAuth';
+import attachCurrentUser from '../middlewares/attachCurrentUser';
 
 const chatRouter = express.Router();
+const authMiddlewares = [isAuth, attachCurrentUser];
 
 chatRouter.route('/')
-  .get(// TODO Invoke ChatController.getAllUserChats
-  );
+  .get(authMiddlewares, ChatController.getAllUserChats);
 
 chatRouter.route('/:chatId')
-  .get(// TODO Invoke ChatController.getChat
-  )
-  .post(// TODO Invoke ChatController.sendMessage
-  )
-  .put(// TODO Invoke ChatController.leaveFromChat
-  )
-  .delete(// TODO Invoke ChatController.deleteChat
-  );
+  .get(authMiddlewares, ChatController.getChat)
+  .post(authMiddlewares, ChatController.sendMessage)
+  .put(authMiddlewares, ChatController.leaveChat)
+  .delete(authMiddlewares, ChatController.deleteChat);
+
+chatRouter.route('/join/:chatId')
+  .put(authMiddlewares, ChatController.joinChat);
 
 chatRouter.route('/new/:receiverId')
-  .post(// TODO Invoke ChatController.createChat
-  );
+  .post(authMiddlewares, ChatController.createChat);
 
 export default chatRouter;
