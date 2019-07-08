@@ -2,20 +2,20 @@ import express from 'express';
 import apiRouter from './routes/api';
 import { connectToDatabase } from './database';
 import { startAppServer, startSocketServer } from './servers';
+import config from './config';
 
 const app = express();
+const { URI } = config.db;
 
 try {
-  connectToDatabase();
+  (async () => {
+    await connectToDatabase(URI);
+    console.log(`connected to ${URI}`);
+    const server = await startAppServer(app);
+    await startSocketServer(server);
+  })();
 } catch (e) {
-  console.error('Something wrong with db connection...\n', e.message);
-}
-
-try {
-  const server = startAppServer(app);
-  startSocketServer(server);
-} catch (e) {
-  console.error('Something wrong with server...\n', e.message);
+  console.error('Something wrong with run of app...\n', e.message);
 }
 
 app.use(express.json());
