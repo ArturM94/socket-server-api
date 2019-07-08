@@ -3,6 +3,7 @@ import apiRouter from './routes/api';
 import { connectToDatabase } from './database';
 import { startAppServer, startSocketServer } from './servers';
 import config from './config';
+import logger from './middlewares/logger';
 
 const app = express();
 const { URI } = config.db;
@@ -20,4 +21,6 @@ try {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(logger.stream);
+app.use(logger.log);
 app.use('/api', apiRouter);
