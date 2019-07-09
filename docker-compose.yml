@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    container_name: socketapi_app
+    links:
+      - db:database
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+
+  db:
+    image: mongo:4
+    container_name: socketapi_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
