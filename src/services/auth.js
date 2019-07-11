@@ -5,25 +5,29 @@ import config from '../config';
 
 async function registration (email, password) {
   const hashedPassword = await argon2.hash(password);
-  const user = await User.create({
+  const registeredUser = await User.create({
     email,
     password: hashedPassword,
   });
-  const token = generateToken(user);
+  const token = generateToken(registeredUser);
+  const user = await removePasswordField(registeredUser);
+
   return { user, token };
 }
 
 async function login (email, password) {
-  const user = await User.findOne({ email }, '+password');
-  if (!user) {
+  const registeredUser = await User.findOne({ email }, '+password');
+  if (!registeredUser) {
     throw new Error('User is not found.');
   } else {
-    const passwordIsCorrect = await argon2.verify(user.password, password);
+    const passwordIsCorrect = await argon2.verify(registeredUser.password, password);
     if (!passwordIsCorrect) {
       throw new Error('Password is incorrect.');
     }
   }
-  const token = generateToken(user);
+  const token = generateToken(registeredUser);
+  const user = await removePasswordField(registeredUser);
+
   return { user, token };
 }
 
@@ -35,6 +39,13 @@ function generateToken (user) {
   const secret = config.auth.JWT_SECRET;
   const expiration = config.auth.JWT_EXPIRATION;
   return jwt.sign({ data }, secret, { expiresIn: expiration });
+}
+
+async function removePasswordField (registeredUser) {
+  const user = await registeredUser.toObject();
+  await delete user.password;
+
+  return user;
 }
 
 export default {
