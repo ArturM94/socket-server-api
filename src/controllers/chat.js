@@ -33,7 +33,7 @@ async function sendMessage (req, res) {
     return res.status(200)
       .json({ message: 'Message sent.' });
   } catch (e) {
-    return res.stat(500)
+    return res.status(500)
       .json({ error: e.message });
   }
 }
@@ -46,7 +46,7 @@ async function leaveChat (req, res) {
     return res.status(200)
       .json({ message: 'You leaved the chat.' });
   } catch (e) {
-    return res.stat(500)
+    return res.status(500)
       .json({ error: e.message });
   }
 }
@@ -59,7 +59,7 @@ async function joinChat (req, res) {
     return res.status(200)
       .json({ message: 'You joined the chat.' });
   } catch (e) {
-    return res.stat(500)
+    return res.status(500)
       .json({ error: e.message });
   }
 }
@@ -72,7 +72,7 @@ async function deleteChat (req, res) {
     return res.status(200)
       .json({ message: `You delete the chat. Messages deleted: ${deletedCount}.` });
   } catch (e) {
-    return res.stat(500)
+    return res.status(500)
       .json({ error: e.message });
   }
 }
