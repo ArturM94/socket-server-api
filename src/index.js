@@ -4,6 +4,7 @@ import { connectToDatabase } from './database';
 import { startAppServer, startSocketServer } from './servers';
 import config from './config';
 import logger from './middlewares/logger';
+import generalErrorHandler from './middlewares/generalErrorHandler';
 
 const app = express();
 const { URI } = config.db;
@@ -24,3 +25,4 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger.stream);
 app.use(logger.log);
 app.use('/api', apiRouter);
+app.use(generalErrorHandler);
