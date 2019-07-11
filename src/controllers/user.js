@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import UserService from '../services/user';
 
 // TODO permission checking after auth implementation
@@ -48,6 +49,12 @@ async function getUser (req, res) {
  * @returns {Promise<Response>} User, otherwise error message
  */
 async function updateUser (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400)
+      .json({ errors: errors.array() });
+  }
+
   const data = req.body;
 
   const dataIsInvalid = !data || data.constructor !== Object || Object.keys(data).length === 0;
@@ -55,8 +62,6 @@ async function updateUser (req, res) {
     return res.status(400)
       .json({ error: 'No input data.' });
   }
-
-  // TODO add data validation
 
   try {
     const user = await UserService.updateUser(req.currentUser._id, data);

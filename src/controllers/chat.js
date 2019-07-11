@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import ChatService from '../services/chat';
 
 async function getAllUserChats (req, res) {
@@ -12,6 +13,12 @@ async function getAllUserChats (req, res) {
 }
 
 async function getChat (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
   const { chatId } = req.params;
 
   try {
@@ -25,6 +32,12 @@ async function getChat (req, res) {
 }
 
 async function sendMessage (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
   const { chatId } = req.params;
   const { messageBody } = req.body;
 
@@ -39,6 +52,12 @@ async function sendMessage (req, res) {
 }
 
 async function leaveChat (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
   const { chatId } = req.params;
 
   try {
@@ -52,6 +71,12 @@ async function leaveChat (req, res) {
 }
 
 async function joinChat (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
   const { chatId } = req.params;
 
   try {
@@ -65,6 +90,12 @@ async function joinChat (req, res) {
 }
 
 async function deleteChat (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
   const { chatId } = req.params;
 
   try {
@@ -78,6 +109,12 @@ async function deleteChat (req, res) {
 }
 
 async function createChat (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
   const { receiverId } = req.params;
   const { messageBody } = req.body;
 
