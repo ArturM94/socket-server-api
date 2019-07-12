@@ -3,6 +3,13 @@ import * as jwt from 'jsonwebtoken';
 import { User } from '../models/user';
 import config from '../config';
 
+/**
+ * Registers new user.
+ *
+ * @param email {string} User email
+ * @param password {string} User password
+ * @returns {Promise<{user: Object, token: string}>} Registered user and its token
+ */
 async function registration (email, password) {
   const hashedPassword = await argon2.hash(password);
   const registeredUser = await User.create({
@@ -15,6 +22,13 @@ async function registration (email, password) {
   return { user, token };
 }
 
+/**
+ * Authenticates user.
+ *
+ * @param email {string} User email
+ * @param password {string} User password
+ * @returns {Promise<{user: Object, token: string}>} Logged in user and its token
+ */
 async function login (email, password) {
   const registeredUser = await User.findOne({ email }, '+password');
   if (!registeredUser) {
@@ -31,6 +45,12 @@ async function login (email, password) {
   return { user, token };
 }
 
+/**
+ * Generates JWT.
+ *
+ * @param user {Object} Registered user
+ * @returns {string} Signed JWT
+ */
 function generateToken (user) {
   const data = {
     _id: user._id,
@@ -41,6 +61,12 @@ function generateToken (user) {
   return jwt.sign({ data }, secret, { expiresIn: expiration });
 }
 
+/**
+ * Removes password field from returning user object.
+ *
+ * @param registeredUser {Object} Registered user
+ * @returns {Promise<Object>} User without password field
+ */
 async function removePasswordField (registeredUser) {
   const user = await registeredUser.toObject();
   await delete user.password;
