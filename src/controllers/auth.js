@@ -39,7 +39,27 @@ async function login (req, res) {
   }
 }
 
+async function resetUserPassword (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .json({ errors: errors.array() });
+  }
+
+  const { password } = req.body;
+
+  try {
+    await AuthService.resetUserPassword(req.currentUser._id, password);
+    return res.status(200)
+      .json({ message: 'Password is reset.' });
+  } catch (e) {
+    return res.status(500)
+      .json({ error: e.message });
+  }
+}
+
 export default {
   registration,
   login,
+  resetUserPassword,
 };

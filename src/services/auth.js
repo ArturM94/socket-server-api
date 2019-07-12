@@ -74,8 +74,21 @@ async function removePasswordField (registeredUser) {
   return user;
 }
 
+/**
+ * Resets user password.
+ *
+ * @param userId {string} User id
+ * @param newPassword {string} User password
+ * @returns {Promise<void>}
+ */
+async function resetUserPassword (userId, newPassword) {
+  const hashedPassword = await argon2.hash(newPassword);
+  await User.findByIdAndUpdate(userId, { password: hashedPassword });
+}
+
 export default {
   registration,
   login,
   generateToken,
+  resetUserPassword,
 };

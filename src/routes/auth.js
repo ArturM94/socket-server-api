@@ -4,10 +4,13 @@ import {
   EmailValidator,
   PasswordValidator,
 } from '../middlewares/validators';
+import isAuth from '../middlewares/isAuth';
+import attachCurrentUser from '../middlewares/attachCurrentUser';
 
 const authRouter = express.Router();
 const emailValidator = EmailValidator();
 const passwordValidator = PasswordValidator();
+const authMiddlewares = [isAuth, attachCurrentUser];
 
 authRouter.route('/registration')
   .post(
@@ -27,7 +30,10 @@ authRouter.route('/logout')
   );
 
 authRouter.route('/reset-user-password')
-  .post(// TODO Invoke AuthController.resetUserPassword
+  .post(
+    passwordValidator,
+    authMiddlewares,
+    AuthController.resetUserPassword
   );
 
 export default authRouter;
